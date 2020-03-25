@@ -6,5 +6,21 @@
   
 */
 
-"bConversations" = "Konversationen 1234";
+"bConversations" = "Chat";
 "bEdit" = "Bearbeiten";
+
+"bToday" = "Heute";
+"bYesterday" = "Gestern";
+"bWriteSomething" = "Schreib etwas...";
+"bSend" = "Senden";
+"bCancel" = "Abbrechen";
+
+"bBack" = "Zurück";
+"bCompose" = "Erstellen";
+"bContacts" = "Kontakte";
+"bTo" = "An";
+"bPickFriends" = "Kontakte auswählen";
+
+"bOptions" = "Optionen";
+"bCamera" = "Kamera";
+"bChoosePhoto" = "Foto auswählen";
