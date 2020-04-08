@@ -31,7 +31,6 @@
 #define bDate @"date"
 #define bUserFirebaseID @"user-firebase-id"
 #define bFrom @"from"
-#define bTo @"to"
 
 #define bMute @"mute"
 #define bUnmute @"unmute"
