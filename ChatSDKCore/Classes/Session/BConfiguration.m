@@ -44,10 +44,6 @@
 @synthesize enableMessageModerationTab;
 @synthesize showLocalNotifications;
 @synthesize onlySendPushToOfflineUsers;
-@synthesize twitterApiKey;
-@synthesize twitterSecret;
-@synthesize googleClientKey;
-@synthesize facebookAppId;
 @synthesize userChatInfoEnabled;
 @synthesize forgotPasswordEnabled;
 @synthesize termsAndConditionsEnabled;
@@ -60,6 +56,7 @@
 @synthesize messageDeletionListenerLimit;
 @synthesize readReceiptMaxAgeInSeconds;
 @synthesize searchIndexes;
+@synthesize showProfileViewOnTap;
 @synthesize showLocalNotificationsForPublicChats;
 
 @synthesize vibrateOnNewMessage;
@@ -162,15 +159,10 @@
         defaultBlankAvatar = [NSBundle imageNamed:bDefaultProfileImage bundle:bCoreBundleName];
         defaultGroupChatAvatar = [NSBundle imageNamed:bDefaultPublicGroupImage bundle:bCoreBundleName];
         
+        showProfileViewOnTap = YES;
+        
         rootPath = [BSettingsManager firebaseRootPath];
-        
-        twitterApiKey = [BSettingsManager twitterApiKey];
-        twitterSecret = [BSettingsManager twitterSecret];
-        
-        facebookAppId = [BSettingsManager facebookAppId];
-        
-        googleClientKey = [BSettingsManager googleClientKey];
-        
+                
         anonymousLoginEnabled = [BSettingsManager anonymousLoginEnabled];
         
         userChatInfoEnabled = YES;
