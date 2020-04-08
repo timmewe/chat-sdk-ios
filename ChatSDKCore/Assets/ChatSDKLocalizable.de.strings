@@ -13,7 +13,7 @@
 "bToday" = "Heute";
 "bYesterday" = "Gestern";
 "bWriteSomething" = "Schreib etwas...";
-"bSend" = "Senden";
+"bSend" = "Los";
 "bCancel" = "Abbrechen";
 
 "bBack" = "Zurück";
@@ -25,3 +25,5 @@
 "bOptions" = "Optionen";
 "bCamera" = "Kamera";
 "bChoosePhoto" = "Foto auswählen";
+"bPhoto" = "Photo";
+"bFile" = "Datei";
