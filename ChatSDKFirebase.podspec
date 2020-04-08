@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ChatSDKFirebase"
-  s.version          = "4.13.0"
+  s.version          = "4.13.1"
   s.summary          = "Chat SDK - Mobile messaging framework for iOS"
   s.homepage         = "https://sdk.chat"
   s.license          = { :type => 'Chat SDK License', :file => 'LICENSE.md' }
@@ -61,25 +61,6 @@ Pod::Spec.new do |s|
 #     f.dependency 'FirebaseUI/Facebook', '~> 5.0'
 #     f.dependency 'FirebaseUI/Google', '~> 5.0'
 #     f.dependency 'FirebaseUI/Phone', '~> 5.0'
-
-  end
-  
- s.subspec 'SocialLogin' do |fsl|
-
-	fsl.source_files = ['ChatSDKFirebase/FirebaseSocialLogin/Classes/**/*']
-	fsl.resource_bundles = {
-	  'ChatFirebaseSocialLogin' => ['ChatSDKFirebase/FirebaseSocialLogin/Assets/**/*']
-	}
-	
-# 	fsl.dependency 'TwitterKit', '<3.3.0'
-# 	fsl.dependency 'TwitterCore', '<3.1.0'
-#  	fsl.dependency 'TwitterKit' 
-#  	fsl.dependency 'TwitterCore' 
-#     fsl.dependency 'GoogleSignIn'
-#     fsl.dependency 'FBSDKLoginKit', '5.10.1'
-
-	fsl.dependency 'ChatSDKFirebase/Adapter'
-	fsl.dependency 'ChatSDK'
 
   end
       

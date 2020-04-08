@@ -76,28 +76,10 @@
 
         NSString * profileURL = [provider.photoURL absoluteString];
         if (profileURL && ![self.model.meta metaStringForKey:bUserImageURLKey]) {
-            
-            // Only do this for Twitter login
-            if ([provider.providerID isEqualToString:@"twitter.com"]) {
-                
-                // Making a call with the provider URL for Twitter returns a picture which is too small
-                // pbs.twimg.com/profile_images/429221067630972928/ABKBUS9o_normal.jpeg returns the image too small
-                // We need to return a larger picture to ensure the image is big enough - remove the _normal to return a larger image with the same url
-                // pbs.twimg.com/profile_images/429221067630972918/ABLBUS9o.jpeg returns the right sized image
-                profileURL = [profileURL stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
-            }
-            
             [self setProfilePictureWithImageURL:profileURL];
             profilePictureSet = YES;
         }
         
-        
-//        id<PUserAccount> account = [_model accountWithType:bAccountTypeFacebook];
-//        if (!account) {
-//            account = [BChatSDK.db createEntity:bUserAccountEntity];
-//            account.type = @(bAccountTypeFacebook);
-//            [_model addLinkedAccountsObject:account];
-//        }
     }
     
     // Must set name before robot image to ensure they are different
@@ -172,9 +154,8 @@
 }
 
 
--(RXPromise *) once {
+-(RXPromise *) once: (NSString *) token {
     
-    NSString * token = BChatSDK.auth.loginInfo[bTokenKey];
     FIRDatabaseReference * ref = [FIRDatabaseReference userRef:self.entityID];
 
     return [BCoreUtilities getWithPath:[ref.description stringByAppendingString:@".json"] parameters:@{@"auth": token}].thenOnMain(^id(NSDictionary * response) {
@@ -182,6 +163,16 @@
         return self;
     }, Nil);
 }
+
+-(RXPromise *) dataOnce: (NSString *) token {
+    
+    FIRDatabaseReference * ref = [FIRDatabaseReference userRef:self.entityID];
+
+    return [BCoreUtilities getWithPath:[ref.description stringByAppendingString:@".json"] parameters:@{@"auth": token}].thenOnMain(^id(NSDictionary * response) {
+        return response;
+    }, Nil);
+}
+
 
 -(RXPromise *) on {
     
@@ -249,34 +240,40 @@
     
     RXPromise * promise = [RXPromise new];
     
-    if (((NSManagedObject *)_model).onlineOn) {
+    if (!BChatSDK.config.disablePresence) {
+        if (((NSManagedObject *)_model).onlineOn) {
+            [promise resolveWithResult:Nil];
+            return promise;
+        }
+        ((NSManagedObject *)_model).onlineOn = YES;
+        
+        FIRDatabaseReference * ref = [FIRDatabaseReference userOnlineRef:self.entityID];
+        
+        [ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * snapshot) {
+            if(![snapshot.value isEqual: [NSNull null]]) {
+                self.model.online = [snapshot.value isEqualToNumber:@1] ? @(YES) : @(NO);
+            }
+            else {
+                self.model.online = @NO;
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:bNotificationUserUpdated
+                                                                object:Nil
+                                                              userInfo:@{bNotificationUserUpdated_PUser: self.model}];
+            [promise resolveWithResult:Nil];
+        }];
+    } else {
         [promise resolveWithResult:Nil];
-        return promise;
     }
-    ((NSManagedObject *)_model).onlineOn = YES;
-    
-    FIRDatabaseReference * ref = [FIRDatabaseReference userOnlineRef:self.entityID];
-    
-    [ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * snapshot) {
-        if(![snapshot.value isEqual: [NSNull null]]) {
-            self.model.online = [snapshot.value isEqualToNumber:@1] ? @(YES) : @(NO);
-        }
-        else {
-            self.model.online = @NO;
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:bNotificationUserUpdated
-                                                            object:Nil
-                                                          userInfo:@{bNotificationUserUpdated_PUser: self.model}];
-    }];
     
     return promise;
 }
 
 -(void) onlineOff {
-    
-    ((NSManagedObject *)_model).onlineOn = NO;
-    FIRDatabaseReference * userRef = [FIRDatabaseReference userOnlineRef:self.entityID];
-    [userRef removeAllObservers];
+    if (!BChatSDK.config.disablePresence) {
+        ((NSManagedObject *)_model).onlineOn = NO;
+        FIRDatabaseReference * userRef = [FIRDatabaseReference userOnlineRef:self.entityID];
+        [userRef removeAllObservers];
+    }
 }
 
 -(RXPromise *) push {
